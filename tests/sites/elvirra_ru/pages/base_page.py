@@ -13,7 +13,7 @@ class BasePage:
     def open(self, path: str = "/"):
         """Открыть страницу по указанному пути"""
         full_url = f"{self.base_url}{path}"
-        browser.driver().get(full_url)
+        browser.driver.get(full_url)
         return self
     
     @allure.step("Проверить, что URL содержит: {expected_part}")
@@ -55,7 +55,7 @@ class BasePage:
     @allure.step("Проверить наличие favicon")
     def should_have_favicon(self):
         """Проверить наличие favicon на странице"""
-        page_source = browser.driver().page_source.lower()
+        page_source = browser.driver.page_source.lower()
         has_favicon = "rel=\"icon\"" in page_source or "favicon" in page_source
         assert has_favicon, "Favicon не найден на странице"
         return self
@@ -64,9 +64,9 @@ class BasePage:
     def should_have_no_js_errors(self):
         """Проверить отсутствие критических JS ошибок в консоли браузера"""
         try:
-            logs = browser.driver().get_log('browser')
+            logs = browser.driver.get_log('browser')
         except Exception:
-            # Для части конфигураций Selenium 3 браузерные логи недоступны.
+            # Для части конфигураций Selenium 4 браузерные логи могут быть недоступны.
             return self
         
         # Фильтруем только SEVERE ошибки
@@ -92,7 +92,7 @@ class BasePage:
     @allure.step("Получить текст элемента: {selector}")
     def get_text(self, selector: str) -> str:
         """Получить текст элемента"""
-        return browser.element(selector).text
+        return browser.element(selector).locate().text
     
     @allure.step("Проверить, что элемент содержит текст: {expected_text}")
     def should_have_text(self, selector: str, expected_text: str):

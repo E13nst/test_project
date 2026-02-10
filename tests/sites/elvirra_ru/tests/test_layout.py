@@ -1,6 +1,7 @@
 """Тесты из раздела 'Чек-лист: Вёрстка'"""
 import allure
 import pytest
+from selenium.webdriver.common.by import By
 from selene import browser
 from tests.sites.elvirra_ru.pages.home_page import HomePage
 
@@ -42,7 +43,8 @@ class TestLayout:
         home.open_home()
         
         # Получаем кодировку из meta-тега или из заголовков
-        encoding_meta = browser.driver().find_elements_by_css_selector(
+        encoding_meta = browser.driver.find_elements(
+            By.CSS_SELECTOR,
             'meta[charset], meta[http-equiv="Content-Type"]'
         )
 
@@ -81,7 +83,7 @@ class TestLayout:
         home.open_home()
         
         # Базовая проверка: текст на странице отображается
-        body_text = browser.element("body").text
+        body_text = browser.element("body").locate().text
         
         assert len(body_text) > 0, "На странице нет текстового контента"
         
@@ -99,7 +101,7 @@ class TestLayout:
         home = HomePage()
         
         # Desktop разрешение (1920x1080)
-        browser.driver().set_window_size(1920, 1080)
+        browser.driver.set_window_size(1920, 1080)
         
         home.open_home()
         home.should_have_header()
@@ -114,7 +116,7 @@ class TestLayout:
         home = HomePage()
         
         # Tablet разрешение (768x1024)
-        browser.driver().set_window_size(768, 1024)
+        browser.driver.set_window_size(768, 1024)
         
         home.open_home()
         home.should_have_header()
@@ -129,7 +131,7 @@ class TestLayout:
         home = HomePage()
         
         # Mobile разрешение (375x667)
-        browser.driver().set_window_size(375, 667)
+        browser.driver.set_window_size(375, 667)
         
         home.open_home()
         home.should_have_header()
@@ -153,12 +155,12 @@ class TestLayout:
         home = HomePage()
         
         # Открываем на desktop
-        browser.driver().set_window_size(1920, 1080)
+        browser.driver.set_window_size(1920, 1080)
         home.open_home()
         home.should_have_main_content()
         
         # Меняем на mobile
-        browser.driver().set_window_size(375, 667)
+        browser.driver.set_window_size(375, 667)
         
         # Проверяем, что контент всё ещё виден
         home.should_have_main_content()

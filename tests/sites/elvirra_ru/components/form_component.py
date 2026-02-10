@@ -1,5 +1,6 @@
 """Компонент формы (переиспользуемый)"""
 import allure
+from selenium.webdriver.common.by import By
 from selene import browser, be, have
 
 
@@ -34,7 +35,7 @@ class FormComponent:
         
         # Или просто проверяем родительский элемент на наличие *
         try:
-            parent_text = field.locate().find_element_by_xpath("..").text
+            parent_text = field.locate().find_element(By.XPATH, "..").text
             if "*" in parent_text:
                 has_asterisk = True
         except:

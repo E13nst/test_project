@@ -4,22 +4,24 @@ import pytest
 from allure_commons.types import AttachmentType
 from selene import browser
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
 @pytest.fixture(scope="function", autouse=True)
 def setup_browser():
     """Настройка браузера перед каждым тестом"""
-    # Инициализация ChromeDriver через webdriver-manager (для Selenium 3.x)
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    # Инициализация ChromeDriver через webdriver-manager (для Selenium 4.x)
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service)
     
     # Настройка размера окна
     driver.set_window_size(1920, 1080)
     
-    # Настройка selene browser
-    browser.set_driver(driver)
-    # В selene 1.0.2 timeout настраивается через driver.implicitly_wait
-    driver.implicitly_wait(10)
+    # Настройка selene browser (selene 2.x)
+    browser.config.driver = driver
+    # В selene 2.x timeout настраивается через browser.config.timeout
+    browser.config.timeout = 10
     
     yield
     
@@ -38,7 +40,7 @@ def pytest_runtest_makereport(item, call):
         try:
             # Скриншот
             allure.attach(
-                browser.driver().get_screenshot_as_png(),
+                browser.driver.get_screenshot_as_png(),
                 name="Скриншот при падении",
                 attachment_type=AttachmentType.PNG,
             )
@@ -48,7 +50,7 @@ def pytest_runtest_makereport(item, call):
         try:
             # HTML страницы
             allure.attach(
-                browser.driver().page_source,
+                browser.driver.page_source,
                 name="HTML страницы",
                 attachment_type=AttachmentType.HTML,
             )
@@ -58,7 +60,7 @@ def pytest_runtest_makereport(item, call):
         try:
             # URL страницы
             allure.attach(
-                browser.driver().current_url,
+                browser.driver.current_url,
                 name="URL страницы",
                 attachment_type=AttachmentType.TEXT,
             )

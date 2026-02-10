@@ -1,6 +1,5 @@
 pytest
-selene==1.0.2
-selenium==3.141.0
-urllib3<2.0
+selene>=2.0.0rc9
+selenium>=4.0.0,<4.15.0
 allure-pytest
 webdriver-manager

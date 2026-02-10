@@ -1,6 +1,7 @@
 """Тесты из раздела 'Чек-лист: Удобство сайта'"""
 import allure
 import pytest
+from selenium.webdriver.common.by import By
 from selene import browser
 from tests.sites.elvirra_ru.pages.home_page import HomePage
 
@@ -65,7 +66,7 @@ class TestUsability:
         
         # Проверяем, что есть интерактивные элементы (кнопки, ссылки, поля)
         interactive_elements = browser.all("a, button, input, select, textarea")
-        count = interactive_elements.size()
+        count = len(interactive_elements)
         
         assert count > 0, "На странице не найдено интерактивных элементов"
         
@@ -85,7 +86,8 @@ class TestUsability:
         home.open_home()
         
         # Ищем все поля ввода на странице
-        input_fields = browser.driver().find_elements_by_css_selector(
+        input_fields = browser.driver.find_elements(
+            By.CSS_SELECTOR,
             "input[type='text'], input[type='email'], input[type='tel'], textarea"
         )
         fields_count = len(input_fields)
@@ -101,7 +103,7 @@ class TestUsability:
             
             # Проверяем наличие label
             if field_id:
-                labels = browser.driver().find_elements_by_css_selector(f'label[for="{field_id}"]')
+                labels = browser.driver.find_elements(By.CSS_SELECTOR, f'label[for="{field_id}"]')
                 if len(labels) > 0:
                     has_hint = True
             
